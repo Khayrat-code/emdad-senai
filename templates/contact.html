@@ -1,0 +1,20 @@
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>تواصل معنا</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="form-container">
+        <h2>نموذج التواصل</h2>
+        <form method="POST">
+            <label>اسمك</label><input name="name" required>
+            <label>بريدك الإلكتروني</label><input name="email" required>
+            <label>رسالتك</label><textarea name="message" rows="5" required></textarea>
+            <input type="submit" value="إرسال" class="btn secondary">
+        </form>
+    </div>
+</body>
+</html>

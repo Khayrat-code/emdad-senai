@@ -1,0 +1,26 @@
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>التسجيل - إمداد صناعي</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="form-container">
+        <h2>إنشاء حساب جديد</h2>
+        <form method="POST">
+            <label>الاسم الكامل</label><input name="name" required>
+            <label>البريد الإلكتروني</label><input name="email" required>
+            <label>كلمة المرور</label><input type="password" name="password" required>
+            <label>الدور</label>
+            <select name="role">
+                <option value="factory">مصنع</option>
+                <option value="supplier">مورد</option>
+            </select>
+            <label>القطاع الصناعي</label><input name="sector">
+            <input type="submit" value="تسجيل" class="btn primary">
+        </form>
+    </div>
+</body>
+</html>

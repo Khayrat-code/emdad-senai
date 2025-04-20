@@ -1,0 +1,25 @@
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>عرض قطاع</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="sector-page">
+        <h2>القطاع المختار: {{ sector }}</h2>
+        {% if sector == 'food' %}
+            <p>الصناعات الغذائية تشمل الأغذية والمشروبات.</p>
+        {% elif sector == 'pharma' %}
+            <p>الصناعات الدوائية تشمل الأدوية والمستلزمات الطبية.</p>
+        {% elif sector == 'chemical' %}
+            <p>الصناعات الكيميائية تشمل الأسمدة والمنظفات.</p>
+        {% elif sector == 'plastic' %}
+            <p>الصناعات البلاستيكية تشمل التعبئة والتغليف.</p>
+        {% else %}
+            <p>لم يتم التعرف على هذا القطاع.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,19 @@
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>تسجيل الدخول</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="form-container">
+        <h2>تسجيل الدخول</h2>
+        <form method="POST">
+            <label>البريد الإلكتروني</label><input name="email" required>
+            <label>كلمة المرور</label><input type="password" name="password" required>
+            <input type="submit" value="دخول" class="btn primary">
+        </form>
+    </div>
+</body>
+</html>
