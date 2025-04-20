@@ -8,7 +8,7 @@ import os
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg'}
 
-app = Flask(_name_)
+app = Flask(__name__)
 app.secret_key = 'secure_key_here'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 DB_NAME = 'users.db'
