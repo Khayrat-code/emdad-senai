@@ -1,0 +1,29 @@
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>إمداد صناعي</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header>
+    <img src="{{ url_for('static', filename='icons/logo.png') }}" alt="شعار" class="logo">
+    <span>إمداد صناعي</span>
+</header>
+<section class="sectors">
+    <div class="card"><img src="{{ url_for('static', filename='icons/food.png') }}"><p>الصناعات الغذائية</p></div>
+    <div class="card"><img src="{{ url_for('static', filename='icons/pharma.png') }}"><p>الصناعات الطبية</p></div>
+    <div class="card"><img src="{{ url_for('static', filename='icons/metal.png') }}"><p>الصناعات المعدنية</p></div>
+    <div class="card"><img src="{{ url_for('static', filename='icons/chemical.png') }}"><p>الصناعات الكيميائية</p></div>
+    <div class="card"><img src="{{ url_for('static', filename='icons/plastic.png') }}"><p>الصناعات البلاستيكية</p></div>
+    <div class="card"><img src="{{ url_for('static', filename='icons/construction.png') }}"><p>الصناعات الإنشائية</p></div>
+    <div class="card"><img src="{{ url_for('static', filename='icons/electronics.png') }}"><p>الإلكترونيات</p></div>
+    <div class="card"><img src="{{ url_for('static', filename='icons/packaging.png') }}"><p>التعبئة والتغليف</p></div>
+</section>
+<footer>
+    <img src="{{ url_for('static', filename='icons/logo.png') }}" alt="شعار" class="footer-logo">
+    <p>جميع الحقوق محفوظة © إمداد صناعي</p>
+</footer>
+</body>
+</html>
