@@ -1,8 +1,8 @@
-
 from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
+import os
 
-app = Flask(__name__)
+app = Flask(_name_)
 app.secret_key = 'secret_key_here'
 DB_NAME = 'database.db'
 
@@ -35,7 +35,8 @@ def highlighted():
 
 @app.route('/industries')
 def industries():
-    return render_template('browse_industries.html')
+    sector = request.args.get('sector')
+    return render_template('sector.html', sector=sector)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -94,7 +95,6 @@ def logout():
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    import os
     port = int(os.environ.get('PORT', 5000))
     init_db()
     app.run(host='0.0.0.0', port=port)
