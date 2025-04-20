@@ -265,3 +265,8 @@ def supplier_profile(supplier_id):
         c.execute("SELECT AVG(rating) FROM ratings WHERE supplier_id = ?", (supplier_id,))
         avg_rating = c.fetchone()[0]
     return render_template('supplier_profile.html', supplier=supplier, avg_rating=avg_rating)
+
+if __name__ == '__main__':
+    init_db()
+    port = int(os.environ.get('PORT', 10000))
+    app.run(host='0.0.0.0', port=port)
