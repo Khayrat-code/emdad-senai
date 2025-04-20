@@ -93,7 +93,7 @@ def logout():
     session.clear()
     return redirect(url_for('index'))
 
-if _name_ == '_main_':
+if __name__ == '__main__':
     import os
     port = int(os.environ.get('PORT', 5000))
     init_db()
