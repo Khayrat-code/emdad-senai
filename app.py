@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
 import os
 
-app = Flask(_name_)
+app = Flask(__name__)
 app.secret_key = 'secret_key_here'
 DB_NAME = 'database.db'
 
