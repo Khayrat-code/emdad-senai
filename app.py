@@ -1,28 +1,27 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
-import sqlite3
-
-import os
 from werkzeug.utils import secure_filename
+import sqlite3
+import os
 
+# إعدادات رفع الملفات
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg'}
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+app = Flask(_name_)
+app.secret_key = 'secure_key_here'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+DB_NAME = 'users.db'
+
+# التأكد من نوع الملف
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-import os
-
-app = Flask(__name__)
-app.secret_key = 'secure_key_here'
-DB_NAME = 'users.db'
-
+# دوال قاعدة البيانات
 def init_db():
     alter_factory_requests_table()
     create_orders_table()
     create_offers_table()
-    create_orders_table()
     with sqlite3.connect(DB_NAME) as conn:
         c = conn.cursor()
         c.execute('''CREATE TABLE IF NOT EXISTS users (
@@ -30,10 +29,50 @@ def init_db():
                         name TEXT NOT NULL,
                         email TEXT NOT NULL UNIQUE,
                         password TEXT NOT NULL,
-                        role TEXT NOT NULL
+                        role TEXT NOT NULL,
+                        sector TEXT
                     )''')
         conn.commit()
 
+def create_orders_table():
+    with sqlite3.connect(DB_NAME) as conn:
+        c = conn.cursor()
+        c.execute('''CREATE TABLE IF NOT EXISTS orders (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        title TEXT,
+                        description TEXT,
+                        sector TEXT,
+                        quantity INTEGER,
+                        delivery_date TEXT,
+                        created_at TEXT,
+                        user_id INTEGER,
+                        attachment TEXT
+                    )''')
+        conn.commit()
+
+def create_offers_table():
+    with sqlite3.connect(DB_NAME) as conn:
+        c = conn.cursor()
+        c.execute('''CREATE TABLE IF NOT EXISTS offers (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        offer_text TEXT NOT NULL,
+                        order_id INTEGER,
+                        user_id INTEGER,
+                        submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    )''')
+        conn.commit()
+
+def alter_factory_requests_table():
+    try:
+        with sqlite3.connect(DB_NAME) as conn:
+            c = conn.cursor()
+            c.execute("ALTER TABLE factory_requests ADD COLUMN lat REAL")
+            c.execute("ALTER TABLE factory_requests ADD COLUMN lng REAL")
+            conn.commit()
+    except:
+        pass  # إذا العمود موجود مسبقاً
+
+# دعم تغيير اللغة
 @app.context_processor
 def inject_lang():
     return dict(get_locale=lambda: session.get('lang', 'ar'))
@@ -43,7 +82,7 @@ def set_language(lang):
     session['lang'] = lang
     return redirect(request.referrer or url_for('index'))
 
-
+# الصفحات الرئيسية
 @app.route('/')
 def index():
     with sqlite3.connect(DB_NAME) as conn:
@@ -58,7 +97,6 @@ def index():
                            factories_count=factories_count,
                            suppliers_count=suppliers_count,
                            orders_count=orders_count)
-
 
 @app.route('/about')
 def about():
@@ -75,6 +113,7 @@ def join_factory():
         return redirect(url_for('index'))
     return render_template('join_factory.html')
 
+# التسجيل والدخول
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -83,17 +122,20 @@ def register():
         password = request.form['password']
         confirm_password = request.form['confirm_password']
         role = request.form['role']
+        sector = request.form.get('sector', '')
+
         if password != confirm_password:
             flash("كلمتا المرور غير متطابقتين.")
             return redirect(url_for('register'))
+
         hashed_password = generate_password_hash(password)
         try:
             with sqlite3.connect(DB_NAME) as conn:
                 c = conn.cursor()
-                c.execute("INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)",
-                          (name, email, hashed_password, role))
+                c.execute("INSERT INTO users (name, email, password, role, sector) VALUES (?, ?, ?, ?, ?)",
+                          (name, email, hashed_password, role, sector))
                 conn.commit()
-            flash("تم إنشاء الحساب بنجاح. يمكنك تسجيل الدخول الآن.")
+            flash("تم إنشاء الحساب بنجاح.")
             return redirect(url_for('login'))
         except sqlite3.IntegrityError:
             flash("البريد الإلكتروني مستخدم بالفعل.")
@@ -105,7 +147,6 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        role = request.form['role']
         with sqlite3.connect(DB_NAME) as conn:
             c = conn.cursor()
             c.execute("SELECT * FROM users WHERE email = ?", (email,))
@@ -114,18 +155,11 @@ def login():
                 session['user_id'] = user[0]
                 session['name'] = user[1]
                 session['role'] = user[4]
-                flash("تم تسجيل الدخول بنجاح.")
+                flash("تم تسجيل الدخول.")
                 return redirect(url_for('dashboard'))
             else:
                 flash("بيانات الدخول غير صحيحة.")
     return render_template('login.html')
-
-@app.route('/dashboard')
-def dashboard():
-    if 'user_id' not in session:
-        flash("يجب تسجيل الدخول أولاً.")
-        return redirect(url_for('login'))
-    return render_template('dashboard.html', name=session['name'], role=session['role'])
 
 @app.route('/logout')
 def logout():
@@ -133,51 +167,13 @@ def logout():
     flash("تم تسجيل الخروج.")
     return redirect(url_for('index'))
 
-if __name__ == '__main__':
-    init_db()
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+@app.route('/dashboard')
+def dashboard():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('dashboard.html', name=session['name'], role=session['role'])
 
-
-@app.route('/admin', methods=['GET', 'POST'])
-def admin():
-    if request.method == 'POST':
-        if request.form.get('password') == 'admin123':  # كلمة مرور مؤقتة
-            with sqlite3.connect(DB_NAME) as conn:
-                c = conn.cursor()
-                c.execute("SELECT * FROM users")
-                users = c.fetchall()
-                c.execute("SELECT * FROM factory_requests")
-                requests = c.fetchall()
-            return render_template('admin.html', users=users, requests=requests)
-        else:
-            flash("كلمة المرور غير صحيحة.")
-            return redirect(url_for('admin'))
-
-    return '''
-        <form method="POST">
-            <h2>دخول المدير</h2>
-            <input type="password" name="password" placeholder="كلمة المرور">
-            <input type="submit" value="دخول">
-        </form>
-    '''
-
-
-
-def create_orders_table():
-    with sqlite3.connect(DB_NAME) as conn:
-        c = conn.cursor()
-        c.execute('''CREATE TABLE IF NOT EXISTS orders (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        title TEXT NOT NULL,
-                        description TEXT NOT NULL,
-                        sector TEXT NOT NULL,
-                        user_id INTEGER,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )''')
-        conn.commit()
-
-
+# أوامر المصنع
 @app.route('/create-order', methods=['GET', 'POST'])
 def create_order():
     if 'user_id' not in session or session['role'] != 'factory':
@@ -201,60 +197,18 @@ def create_order():
 
         with sqlite3.connect(DB_NAME) as conn:
             c = conn.cursor()
-            c.execute('''CREATE TABLE IF NOT EXISTS orders (
-                            id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            title TEXT,
-                            description TEXT,
-                            sector TEXT,
-                            quantity INTEGER,
-                            delivery_date TEXT,
-                            created_at TEXT,
-                            user_id INTEGER,
-                            attachment TEXT
-                        )''')
             c.execute("INSERT INTO orders (title, description, sector, quantity, delivery_date, created_at, user_id, attachment) VALUES (?, ?, ?, ?, ?, datetime('now'), ?, ?)",
                       (title, description, sector, quantity, delivery_date, user_id, filename))
             conn.commit()
         flash("تم نشر الطلب بنجاح.")
         return redirect(url_for('dashboard'))
 
-    return render_template('create_order.html'), methods=['GET', 'POST'])
-def create_order():
-    if 'user_id' not in session or session['role'] != 'factory':
-        flash("يجب أن تكون مسجلًا كمصنع لإنشاء الطلبات.")
-        return redirect(url_for('login'))
-    if request.method == 'POST':
-        title = request.form['title']
-        description = request.form['description']
-        sector = request.form['sector']
-        with sqlite3.connect(DB_NAME) as conn:
-            c = conn.cursor()
-            c.execute("INSERT INTO orders (title, description, sector, user_id) VALUES (?, ?, ?, ?)",
-                      (title, description, sector, session['user_id']))
-            conn.commit()
-        flash("تم نشر الطلب بنجاح.")
-        return redirect(url_for('dashboard'))
     return render_template('create_order.html')
-
-
-
-def create_offers_table():
-    with sqlite3.connect(DB_NAME) as conn:
-        c = conn.cursor()
-        c.execute('''CREATE TABLE IF NOT EXISTS offers (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        offer_text TEXT NOT NULL,
-                        order_id INTEGER,
-                        user_id INTEGER,
-                        submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )''')
-        conn.commit()
-
 
 @app.route('/orders')
 def view_orders():
     if 'user_id' not in session or session['role'] != 'supplier':
-        flash("يجب تسجيل الدخول كمورد لعرض الطلبات.")
+        flash("يجب تسجيل الدخول كمورد.")
         return redirect(url_for('login'))
     with sqlite3.connect(DB_NAME) as conn:
         c = conn.cursor()
@@ -262,11 +216,9 @@ def view_orders():
         orders = c.fetchall()
     return render_template('view_orders.html', orders=orders)
 
-
 @app.route('/submit-offer/<int:order_id>', methods=['GET', 'POST'])
 def submit_offer(order_id):
     if 'user_id' not in session or session['role'] != 'supplier':
-        flash("يجب تسجيل الدخول كمورد لتقديم عرض.")
         return redirect(url_for('login'))
     with sqlite3.connect(DB_NAME) as conn:
         c = conn.cursor()
@@ -277,21 +229,11 @@ def submit_offer(order_id):
             c.execute("INSERT INTO offers (offer_text, order_id, user_id) VALUES (?, ?, ?)",
                       (offer_text, order_id, session['user_id']))
             conn.commit()
-            flash("تم إرسال العرض بنجاح.")
+            flash("تم إرسال العرض.")
             return redirect(url_for('view_orders'))
     return render_template('submit_offer.html', order=order)
 
-
-
-def alter_factory_requests_table():
-    with sqlite3.connect(DB_NAME) as conn:
-        c = conn.cursor()
-        c.execute("ALTER TABLE factory_requests ADD COLUMN lat REAL")
-        c.execute("ALTER TABLE factory_requests ADD COLUMN lng REAL")
-        conn.commit()
-
-
-
+# القطاعات والمصانع
 @app.route('/industries')
 def industries():
     sectors = ["غذائي", "طبي", "معدني", "كيميائي", "بلاستيكي", "إنشائي", "إلكتروني", "تغليف"]
@@ -305,8 +247,6 @@ def factories_by_sector(sector):
         factories = c.fetchall()
     return render_template('factories_by_sector.html', sector=sector, factories=factories)
 
-
-
 @app.route('/order/<int:order_id>')
 def order_details(order_id):
     with sqlite3.connect(DB_NAME) as conn:
@@ -314,8 +254,6 @@ def order_details(order_id):
         c.execute("SELECT * FROM orders WHERE id = ?", (order_id,))
         order = c.fetchone()
     return render_template('request_details.html', order=order)
-
-
 
 @app.route('/factory/<int:user_id>')
 def factory_profile(user_id):
@@ -326,3 +264,32 @@ def factory_profile(user_id):
         c.execute("SELECT * FROM orders WHERE user_id = ?", (user_id,))
         orders = c.fetchall()
     return render_template('factory_profile.html', factory=factory, orders=orders)
+
+# لوحة تحكم المشرف
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    if request.method == 'POST':
+        if request.form.get('password') == 'admin123':
+            with sqlite3.connect(DB_NAME) as conn:
+                c = conn.cursor()
+                c.execute("SELECT * FROM users")
+                users = c.fetchall()
+                c.execute("SELECT * FROM factory_requests")
+                requests = c.fetchall()
+            return render_template('admin.html', users=users, requests=requests)
+        else:
+            flash("كلمة المرور غير صحيحة.")
+            return redirect(url_for('admin'))
+    return '''
+        <form method="POST">
+            <h2>دخول المدير</h2>
+            <input type="password" name="password" placeholder="كلمة المرور">
+            <input type="submit" value="دخول">
+        </form>
+    '''
+
+# تشغيل التطبيق
+if _name_ == '_main_':
+    init_db()
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
