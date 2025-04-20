@@ -4,7 +4,7 @@ from werkzeug.utils import secure_filename
 import sqlite3
 import os
 
-app = Flask(_name_)
+app = Flask(__name__)
 app.secret_key = 'secure_key_here'
 DB_NAME = 'emdad_sanai.db'
 
