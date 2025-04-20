@@ -1,0 +1,23 @@
+
+{% extends 'base.html' %}
+{% block title %}تفاصيل الطلب{% endblock %}
+{% block content %}
+<h2>تفاصيل الطلب</h2>
+{% if order %}
+    <p><strong>العنوان:</strong> {{ order[1] }}</p>
+    <p><strong>الوصف:</strong> {{ order[2] }}</p>
+    <p><strong>القطاع:</strong> {{ order[3] }}</p>
+    <p><strong>الكمية:</strong> {{ order[4] }}</p>
+    <p><strong>تاريخ التسليم:</strong> {{ order[5] }}</p>
+    <p><strong>تاريخ النشر:</strong> {{ order[6] }}</p>
+
+    {% if order[8] %}
+        <p><strong>مرفق:</strong>
+            <a href="{{ url_for('static', filename='uploads/' + order[8]) }}" target="_blank">تحميل المرفق</a>
+        </p>
+    {% endif %}
+    <a href="#" class="button">تقديم عرض</a> <!-- للتطوير لاحقاً -->
+{% else %}
+    <p>الطلب غير موجود.</p>
+{% endif %}
+{% endblock %}

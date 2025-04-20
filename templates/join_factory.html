@@ -1,0 +1,44 @@
+
+{% extends 'base.html' %}
+{% block title %}انضم كمصنع{% endblock %}
+{% block content %}
+<section class="content">
+    <h2>طلب انضمام كمصنع</h2>
+    <form method="POST" enctype="multipart/form-data">
+        <label>اسم المصنع</label><input name="factory_name" required>
+        <label>البريد الإلكتروني</label><input name="email" required>
+        <label>السجل التجاري (PDF)</label><input type="file" name="cr_file" accept=".pdf" required>
+        <label>رخصة التشغيل (PDF)</label><input type="file" name="license_file" accept=".pdf">
+
+        <label>الموقع على الخريطة</label>
+        <div id="map" style="height: 300px;"></div>
+        <input type="hidden" name="lat" id="lat">
+        <input type="hidden" name="lng" id="lng">
+
+        <button type="submit">إرسال الطلب</button>
+    </form>
+</section>
+
+<script>
+function initMap() {
+    var defaultLocation = { lat: 24.7136, lng: 46.6753 }; // الرياض
+    var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 6,
+        center: defaultLocation
+    });
+    var marker;
+
+    map.addListener('click', function(event) {
+        if (!marker) {
+            marker = new google.maps.Marker({ position: event.latLng, map: map });
+        } else {
+            marker.setPosition(event.latLng);
+        }
+        document.getElementById('lat').value = event.latLng.lat();
+        document.getElementById('lng').value = event.latLng.lng();
+    });
+}
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap"
+    async defer></script>
+{% endblock %}

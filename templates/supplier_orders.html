@@ -1,0 +1,19 @@
+
+{% extends 'base.html' %}
+{% block title %}الطلبات المقدمة للموردين{% endblock %}
+{% block content %}
+<h2>الطلبات المقدمة لك</h2>
+<table border="1">
+    <tr><th>العنوان</th><th>الوصف</th><th>القطاع</th><th>الكمية</th><th>تاريخ التسليم</th><th>التاريخ</th></tr>
+    {% for order in orders %}
+    <tr>
+        <td>{{ order[1] }}</td>
+        <td>{{ order[2] }}</td>
+        <td>{{ order[3] }}</td>
+        <td>{{ order[4] }}</td>
+        <td>{{ order[5] }}</td>
+        <td>{{ order[6] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

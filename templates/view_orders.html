@@ -1,0 +1,18 @@
+
+{% extends 'base.html' %}
+{% block title %}الطلبات المتاحة{% endblock %}
+{% block content %}
+<h2>الطلبات المفتوحة من المصانع</h2>
+<table border="1">
+    <tr><th>العنوان</th><th>الوصف</th><th>القطاع</th><th>تاريخ النشر</th><th>الإجراء</th></tr>
+    {% for order in orders %}
+    <tr>
+        <td>{{ order[1] }}</td>
+        <td>{{ order[2] }}</td>
+        <td>{{ order[3] }}</td>
+        <td>{{ order[5] }}</td>
+        <td><a href="{{ url_for('submit_offer', order_id=order[0]) }}">تقديم عرض</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

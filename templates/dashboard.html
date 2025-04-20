@@ -1,0 +1,10 @@
+
+{% extends 'base.html' %}
+{% block title %}لوحة التحكم{% endblock %}
+{% block content %}
+<div class="dashboard">
+    <h2>مرحبًا {{ name }}!</h2>
+    <p>دورك: {{ role }}</p>
+    <a href="/logout" class="button">تسجيل الخروج</a>
+</div>
+{% endblock %}
