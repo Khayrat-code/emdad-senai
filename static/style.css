@@ -1,0 +1,39 @@
+
+body {
+    direction: rtl;
+    font-family: 'Tajawal', sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    padding: 20px;
+}
+.container {
+    max-width: 1200px;
+    margin: auto;
+}
+h2 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+.industry-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+.industry-card {
+    width: 140px;
+    text-align: center;
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+.industry-card img {
+    width: 80px;
+    height: 80px;
+}
+footer {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 14px;
+    color: #888;
+}

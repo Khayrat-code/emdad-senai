@@ -1,0 +1,22 @@
+
+{% extends 'base.html' %}
+{% block title %}تسجيل حساب{% endblock %}
+{% block content %}
+<h2>إنشاء حساب جديد</h2>
+<form method="POST">
+    <label>الاسم:</label><br>
+    <input type="text" name="name" required><br>
+    <label>البريد الإلكتروني:</label><br>
+    <input type="email" name="email" required><br>
+    <label>كلمة المرور:</label><br>
+    <input type="password" name="password" required><br>
+    <label>الدور:</label><br>
+    <select name="role" required>
+        <option value="factory">مصنع</option>
+        <option value="supplier">مورد</option>
+    </select><br>
+    <label>القطاع:</label><br>
+    <input type="text" name="sector"><br><br>
+    <input type="submit" value="تسجيل">
+</form>
+{% endblock %}

@@ -1,0 +1,11 @@
+
+{% extends 'base.html' %}
+{% block title %}التقارير الإحصائية{% endblock %}
+{% block content %}
+<h2>التقارير الإحصائية للمصنع</h2>
+<ul>
+    <li>إجمالي الطلبات: {{ total_orders }}</li>
+    <li>إجمالي العروض المستلمة: {{ total_offers }}</li>
+    <li>آخر تاريخ لإضافة طلب: {{ last_order_date or 'لا يوجد' }}</li>
+</ul>
+{% endblock %}

@@ -1,0 +1,16 @@
+
+{% extends 'base.html' %}
+{% block title %}القطاعات الصناعية{% endblock %}
+{% block content %}
+<h2>تصفح حسب القطاع الصناعي</h2>
+<div class="industry-grid">
+    {% for sector in sectors %}
+    <div class="industry-card">
+        <a href="{{ url_for('factories_by_sector', sector=sector) }}">
+            <img src="{{ url_for('static', filename='icons/' + sector + '.png') }}" alt="{{ sector }}">
+            <p>{{ sector }}</p>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

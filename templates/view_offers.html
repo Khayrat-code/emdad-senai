@@ -1,0 +1,15 @@
+
+{% extends 'base.html' %}
+{% block title %}العروض المقدمة{% endblock %}
+{% block content %}
+<h2>العروض المقدمة للطلب رقم {{ order_id }}</h2>
+{% if offers %}
+    <ul>
+    {% for offer in offers %}
+        <li>{{ offer[1] }} - مقدم من المستخدم رقم {{ offer[3] }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>لا توجد عروض بعد.</p>
+{% endif %}
+{% endblock %}

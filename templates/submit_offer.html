@@ -1,0 +1,11 @@
+
+{% extends 'base.html' %}
+{% block title %}تقديم عرض{% endblock %}
+{% block content %}
+<h2>تقديم عرض للطلب رقم {{ order_id }}</h2>
+<form method="POST">
+    <label>نص العرض:</label><br>
+    <textarea name="offer_text" required></textarea><br><br>
+    <input type="submit" value="إرسال العرض">
+</form>
+{% endblock %}

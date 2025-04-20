@@ -1,0 +1,19 @@
+
+{% extends 'base.html' %}
+{% block title %}تعديل الطلب{% endblock %}
+{% block content %}
+<h2>تعديل الطلب</h2>
+<form method="POST">
+    <label>العنوان:</label><br>
+    <input type="text" name="title" value="{{ order[1] }}" required><br>
+    <label>الوصف:</label><br>
+    <textarea name="description" required>{{ order[2] }}</textarea><br>
+    <label>القطاع:</label><br>
+    <input type="text" name="sector" value="{{ order[3] }}" required><br>
+    <label>الكمية:</label><br>
+    <input type="number" name="quantity" value="{{ order[4] }}" required><br>
+    <label>تاريخ التسليم:</label><br>
+    <input type="date" name="delivery_date" value="{{ order[5] }}" required><br><br>
+    <input type="submit" value="حفظ التعديلات">
+</form>
+{% endblock %}

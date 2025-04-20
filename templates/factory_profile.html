@@ -1,0 +1,15 @@
+
+{% extends 'base.html' %}
+{% block title %}الملف التعريفي للمصنع{% endblock %}
+{% block content %}
+<h2>المصنع: {{ factory[1] }}</h2>
+<p>البريد الإلكتروني: {{ factory[2] }}</p>
+<p>القطاع: {{ factory[5] }}</p>
+
+<h3>الطلبات المنشورة:</h3>
+<ul>
+    {% for order in orders %}
+    <li>{{ order[1] }} - {{ order[2] }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

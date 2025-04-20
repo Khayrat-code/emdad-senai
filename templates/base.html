@@ -1,0 +1,20 @@
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}إمداد صناعي{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="{{ url_for('static', filename='icons/logo.png') }}" alt="شعار" width="120">
+        </header>
+        {% block content %}{% endblock %}
+        <footer>
+            <p>© جميع الحقوق محفوظة - إمداد صناعي</p>
+        </footer>
+    </div>
+</body>
+</html>

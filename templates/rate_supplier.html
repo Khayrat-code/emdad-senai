@@ -1,0 +1,11 @@
+
+{% extends 'base.html' %}
+{% block title %}تقييم المورد{% endblock %}
+{% block content %}
+<h2>تقييم المورد رقم {{ supplier_id }}</h2>
+<form method="POST">
+    <label>التقييم (1 إلى 5):</label><br>
+    <input type="number" name="rating" min="1" max="5" required><br><br>
+    <input type="submit" value="إرسال التقييم">
+</form>
+{% endblock %}

@@ -1,0 +1,8 @@
+
+{% extends 'base.html' %}
+{% block title %}لوحة التحكم{% endblock %}
+{% block content %}
+<h2>مرحباً {{ name }} ({{ role }})</h2>
+<p>أنت الآن في لوحة التحكم.</p>
+<a href="{{ url_for('logout') }}">تسجيل الخروج</a>
+{% endblock %}

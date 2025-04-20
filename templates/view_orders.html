@@ -1,0 +1,18 @@
+
+{% extends 'base.html' %}
+{% block title %}الطلبات المقدمة لي{% endblock %}
+{% block content %}
+<h2>الطلبات المتاحة للموردين</h2>
+{% if orders %}
+    <ul>
+    {% for order in orders %}
+        <li>
+            <strong>{{ order[1] }}</strong> - {{ order[2] }} <br>
+            القطاع: {{ order[3] }} | الكمية: {{ order[4] }} | التسليم: {{ order[5] }}
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>لا توجد طلبات حالياً.</p>
+{% endif %}
+{% endblock %}
